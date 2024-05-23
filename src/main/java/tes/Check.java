@@ -1,9 +1,6 @@
 package tes;
 
-import java.util.Arrays;
-import java.util.DoubleSummaryStatistics;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -76,6 +73,109 @@ public class Check {
                 .map(arr -> String.valueOf(arr[0]).concat(" "))
                 .limit(10)
                 .forEach(System.out::print);*/
+
+        /*String str = "aab";
+        System.out.println(getAllPalindromicPartitions(str));*/
+
+        String s1 = "SEND";
+        String s2 = "MORE";
+        String s3 = "MONEY";
+
+        solveCryptQuestion(s1, s2, s3);
+    }
+
+    private static void solveCryptQuestion(String s1, String s2, String s3) {
+        Map<Character, Integer> dataMap = new HashMap<>();
+
+        List<String> list = List.of(s1, s2, s3);
+        StringBuilder sb = new StringBuilder();
+
+        populateMap(dataMap, list, sb);
+        boolean[] isTaken = new boolean[10];
+
+        solveIt(dataMap, sb, 0, isTaken, s1, s2, s3);
+    }
+
+    private static void solveIt(Map<Character, Integer> dataMap, StringBuilder sb, int index, boolean[] isTaken, String s1, String s2, String s3) {
+
+        if (dataMap.get(s1.charAt(0)) == 0 || dataMap.get(s2.charAt(0)) == 0 || dataMap.get(s3.charAt(0)) == 0) {
+            return;
+        }
+
+        if (index >= sb.length()) {
+            int n1 = getNum(dataMap, s1);
+            int n2 = getNum(dataMap, s2);
+            int n3 = getNum(dataMap, s3);
+
+            if (n1 + n2 == n3) {
+                System.out.println("n1: " + n1 + " n2: " + n2 + " = n3: " + n3);
+            }
+            return;
+        }
+
+        char ch = sb.charAt(index);
+        for (int i = 0; i < 10; i++) {
+            if (!isTaken[i]) {
+                isTaken[i] = true;
+                dataMap.put(ch, i);
+                solveIt(dataMap, sb, index + 1, isTaken, s1, s2, s3);
+                dataMap.put(ch, -1);
+                isTaken[i] = false;
+            }
+        }
+    }
+
+    private static int getNum(Map<Character, Integer> dataMap, String num) {
+        StringBuilder sb = new StringBuilder();
+        for (char ch : num.toCharArray()) {
+            if (dataMap.containsKey(ch)) {
+                sb.append(dataMap.get(ch));
+            }
+        }
+        return Integer.parseInt(sb.toString());
+    }
+
+    private static void populateMap(Map<Character, Integer> dataMap, List<String> strs, StringBuilder sb) {
+        for (String word : strs) {
+            char[] chars = word.toCharArray();
+            for (char ch : chars) {
+                if (!dataMap.containsKey(ch)) {
+                    dataMap.put(ch, -1);
+                    sb.append(ch);
+                }
+            }
+        }
+    }
+
+    private static List<List<String>> getAllPalindromicPartitions(String str) {
+        List<List<String>> ans = new ArrayList<>();
+        solveUsingRecursionAndBackTracking(str, 0, new ArrayList<>(), ans);
+        return ans;
+    }
+
+    private static void solveUsingRecursionAndBackTracking(String str, int index, ArrayList<String> temp, List<List<String>> ans) {
+        if (index >= str.length()) {
+            ans.add(new ArrayList<>(temp));
+        }
+
+        for (int i = index; i < str.length(); i++) {
+            if (isPalindrome(str, index, i)) {
+                temp.add(str.substring(index, i + 1));
+                solveUsingRecursionAndBackTracking(str, i + 1, temp, ans);
+                temp.remove(temp.size() - 1);
+            }
+        }
+    }
+
+    private static boolean isPalindrome(String str, int fromIndex, int toIndex) {
+        while (fromIndex < toIndex) {
+            if (str.charAt(fromIndex) != str.charAt(toIndex)) {
+                return false;
+            }
+            fromIndex++;
+            toIndex--;
+        }
+        return true;
     }
 }
 
