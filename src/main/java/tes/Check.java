@@ -1,5 +1,8 @@
 package tes;
 
+import org.w3c.dom.css.CSSUnknownRule;
+
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -77,11 +80,74 @@ public class Check {
         /*String str = "aab";
         System.out.println(getAllPalindromicPartitions(str));*/
 
-        String s1 = "SEND";
+        /*String s1 = "SEND";
         String s2 = "MORE";
         String s3 = "MONEY";
+        solveCryptQuestion(s1, s2, s3);*/
 
-        solveCryptQuestion(s1, s2, s3);
+        /*int k = 4;
+        int[] nums = {1, 2, 3, 4, 3, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        System.out.println(beautifulSubsets(nums, k));*/
+
+        /*List<String> list = List.of("1", "2", "3", "4", "5", "6");
+        list.stream()
+                .map(Integer::parseInt)
+                .collect(Collectors.partitioningBy(num -> num % 2 == 0))
+                .values()
+                .forEach(System.out::println);*/
+
+        System.out.println(isHappy(3));
+    }
+
+    private static boolean isHappy(int n) {
+        int sum = 0;
+        boolean flag = false;
+
+        Set<Integer> set = new HashSet<>();
+
+        do {
+            if (n == 0) {
+                n = sum;
+                flag = true;
+            }
+            int rem = n % 10;
+            if (flag) {
+                set.add(sum);
+                sum = 0;
+                flag = false;
+            }
+            sum += rem * rem;
+            n /= 10;
+
+            if (sum == 1) {
+                return true;
+            }
+        } while (!set.contains(sum));
+
+        System.out.println(set);
+        return false;
+    }
+
+    static int count = 0;
+
+    private static int beautifulSubsets(int[] nums, int k) {
+        solve(nums, 0, new HashMap<Integer, Integer>(), k);
+        return count - 1;
+    }
+
+    private static void solve(int[] nums, int index, HashMap<Integer, Integer> map, int k) {
+        if (index >= nums.length) {
+            count += 1;
+            return;
+        }
+
+        if (!map.containsKey(nums[index] - k) && !map.containsKey(nums[index] + k)) {
+            map.put(nums[index], 1);
+            solve(nums, index + 1, map, k);
+            map.remove(nums[index]);
+        }
+
+        solve(nums, index + 1, map, k);
     }
 
     private static void solveCryptQuestion(String s1, String s2, String s3) {
@@ -177,6 +243,7 @@ public class Check {
         }
         return true;
     }
+
 }
 
 class Product {
